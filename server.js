@@ -1,78 +1,76 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import axios from "axios";
-import User from "./models/User.js"; // jo model banaya tha usko import karo
+import fetch from "node-fetch";
+import User from "./models/User.js";
 
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-// =============== MongoDB Connect ===============
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("✅ MongoDB Connected"))
-.catch(err => console.error("❌ MongoDB Error:", err));
+// MongoDB Connect
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB Error:", err));
 
-// =============== Home Route ===============
+// Home page
 app.get("/", (req, res) => {
   res.send("✅ Verification Website is Running!");
 });
 
-// =============== OAuth2 Redirect ===============
+// ✅ Login route (Discord OAuth2 authorize link)
 app.get("/login", (req, res) => {
-  const redirectUri = encodeURIComponent(process.env.REDIRECT_URI);
-  res.redirect(
-    `https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=identify%20guilds.join`
-  );
+  const redirect = `https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(
+    process.env.REDIRECT_URI
+  )}&response_type=code&scope=identify%20guilds.join`;
+  res.redirect(redirect);
 });
 
-// =============== OAuth2 Callback ===============
+// ✅ Callback route
 app.get("/callback", async (req, res) => {
   const code = req.query.code;
-  if (!code) return res.send("❌ No code provided!");
+  if (!code) return res.send("No code provided!");
 
   try {
-    // Get access token from Discord
-    const tokenResponse = await axios.post(
-      "https://discord.com/api/oauth2/token",
-      new URLSearchParams({
+    // Exchange code for access token
+    const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
         client_id: process.env.CLIENT_ID,
         client_secret: process.env.CLIENT_SECRET,
         grant_type: "authorization_code",
         code,
         redirect_uri: process.env.REDIRECT_URI,
       }),
-      {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      }
-    );
-
-    const { access_token, token_type } = tokenResponse.data;
-
-    // Get user info
-    const userResponse = await axios.get("https://discord.com/api/users/@me", {
-      headers: {
-        Authorization: `${token_type} ${access_token}`,
-      },
     });
 
-    const user = userResponse.data;
+    const tokenData = await tokenResponse.json();
+    if (!tokenData.access_token) return res.send("Error getting access token!");
+
+    // Get user info
+    const userResponse = await fetch("https://discord.com/api/users/@me", {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    });
+    const userData = await userResponse.json();
 
     // Save user in DB
     await User.findOneAndUpdate(
-      { discordId: user.id },
-      { username: user.username, discriminator: user.discriminator },
+      { discordId: userData.id },
+      {
+        discordId: userData.id,
+        username: `${userData.username}#${userData.discriminator}`,
+        verified: true,
+      },
       { upsert: true, new: true }
     );
 
-    res.send(`✅ Verified as ${user.username}#${user.discriminator}`);
+    res.send("✅ Verification Successful! You can close this tab now.");
   } catch (err) {
-    console.error(err.response?.data || err.message);
-    res.send("❌ Verification failed!");
+    console.error(err);
+    res.send("Error during verification!");
   }
 });
 

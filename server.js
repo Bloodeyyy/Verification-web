@@ -57,21 +57,22 @@ app.get("/callback", async (req, res) => {
 
     const userData = userResponse.data;
 
-    // ✅ Save user in DB with access token
+    // ✅ Save user in DB with accessToken
     await User.findOneAndUpdate(
       { discordId: userData.id },
       {
         discordId: userData.id,
         username: `${userData.username}#${userData.discriminator}`,
+        accessToken: tokenData.access_token,   // ✅ ye zaroori hai
         verified: true,
-        accessToken: tokenData.access_token, // 🔑 ye important hai
+        verifiedAt: new Date()
       },
       { upsert: true, new: true }
     );
 
     res.send("✅ Verification Successful! You can close this tab now.");
   } catch (err) {
-    console.error(err.response?.data || err.message);
+    console.error(err);
     res.send("Error during verification!");
   }
 });

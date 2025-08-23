@@ -67,8 +67,7 @@ app.get("/callback", async (req, res) => {
     ...(tokenData.refresh_token && { refreshToken: tokenData.refresh_token }),
     expiresAt: Date.now() + tokenData.expires_in * 1000,
     verified: true,
-    verifiedAt: new Date(),
-    roleAssigned: false // ✅ ensure bot assigns role
+    verifiedAt: new Date()
   },
   { upsert: true, new: true }
 );

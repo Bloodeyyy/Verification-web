@@ -64,8 +64,8 @@ app.get("/callback", async (req, res) => {
     discordId: userData.id,
     username: `${userData.username}#${userData.discriminator}`,
     accessToken: tokenData.access_token,
-    refreshToken: tokenData.refresh_token, // ✅ store refresh token
-    expiresAt: Date.now() + tokenData.expires_in * 1000, // save expiry timestamp
+    ...(tokenData.refresh_token && { refreshToken: tokenData.refresh_token }), // ✅ sirf tab save karega jab refresh_token aaye
+    expiresAt: Date.now() + tokenData.expires_in * 1000,
     verified: true,
     verifiedAt: new Date()
   },

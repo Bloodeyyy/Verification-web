@@ -2,10 +2,12 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  discordId: { type: String, required: true, unique: true },
+  discordId: { type: String, required: true },
   username: { type: String, required: true },
-  verified: { type: Boolean, default: false }, // ✅ easy filter
-  accessToken: { type: String }, // ✅ guild join ke liye
+  accessToken: { type: String },
+  refreshToken: { type: String },
+  expiresAt: { type: Date },
+  verified: { type: Boolean, default: false },
   verifiedAt: { type: Date, default: Date.now }
 });
 

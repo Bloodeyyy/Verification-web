@@ -59,16 +59,18 @@ app.get("/callback", async (req, res) => {
 
     // ✅ Save user in DB with accessToken
     await User.findOneAndUpdate(
-      { discordId: userData.id },
-      {
-        discordId: userData.id,
-        username: `${userData.username}#${userData.discriminator}`,
-        accessToken: tokenData.access_token,   // ✅ ye zaroori hai
-        verified: true,
-        verifiedAt: new Date()
-      },
-      { upsert: true, new: true }
-    );
+  { discordId: userData.id },
+  {
+    discordId: userData.id,
+    username: `${userData.username}#${userData.discriminator}`,
+    accessToken: tokenData.access_token,
+    refreshToken: tokenData.refresh_token, // ✅ store refresh token
+    expiresAt: Date.now() + tokenData.expires_in * 1000, // save expiry timestamp
+    verified: true,
+    verifiedAt: new Date()
+  },
+  { upsert: true, new: true }
+);
 
     res.send("✅ Verification Successful! You can close this tab now.");
   } catch (err) {

@@ -64,15 +64,14 @@ app.get("/callback", async (req, res) => {
     discordId: userData.id,
     username: `${userData.username}#${userData.discriminator}`,
     accessToken: tokenData.access_token,
-    ...(tokenData.refresh_token && { refreshToken: tokenData.refresh_token }), // ✅ sirf tab save karega jab refresh_token aaye
+    ...(tokenData.refresh_token && { refreshToken: tokenData.refresh_token }),
     expiresAt: Date.now() + tokenData.expires_in * 1000,
     verified: true,
-    verifiedAt: new Date()
+    verifiedAt: new Date(),
+    roleAssigned: false // ✅ ensure bot assigns role
   },
   { upsert: true, new: true }
 );
-
-await assignVerifiedRole(userData);
 
     res.send("✅ Verification Successful! You can close this tab now.");
   } catch (err) {

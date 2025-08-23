@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
   expiresAt: { type: Date },
   verified: { type: Boolean, default: false },
   verifiedAt: { type: Date, default: Date.now },
-  roleAssigned: { type: Boolean, default: false } // ✅ important for bot
 });
 
 module.exports = mongoose.model("User", userSchema);

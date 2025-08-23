@@ -72,6 +72,8 @@ app.get("/callback", async (req, res) => {
   { upsert: true, new: true }
 );
 
+await assignVerifiedRole(userData);
+
     res.send("✅ Verification Successful! You can close this tab now.");
   } catch (err) {
     console.error(err);

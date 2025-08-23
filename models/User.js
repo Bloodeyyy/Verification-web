@@ -1,4 +1,4 @@
-// models/User.js
+// models/User.js (web project)
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
   refreshToken: { type: String },
   expiresAt: { type: Date },
   verified: { type: Boolean, default: false },
-  verifiedAt: { type: Date, default: Date.now }
+  verifiedAt: { type: Date, default: Date.now },
+  roleAssigned: { type: Boolean, default: false } // ✅ important for bot
 });
 
 module.exports = mongoose.model("User", userSchema);

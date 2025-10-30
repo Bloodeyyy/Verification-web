@@ -2,7 +2,6 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const axios = require("axios");
-// FIX 1: Change import to require for CommonJS stability, especially on Render.
 const User = require("./models/User"); 
 
 dotenv.config();
@@ -31,11 +30,9 @@ app.get("/login", (req, res) => {
 
 // --- HELPER FUNCTION TO GET DISCORD AVATAR URL ---
 const getAvatarUrl = (id, avatarHash) => {
-    // Discord's default avatar logic uses the discriminator if no custom avatar exists
     if (avatarHash) {
         return `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.png?size=128`;
     }
-    // Fallback for default avatars: Use the user's discriminator
     const defaultAvatarIndex = id % 5;
     return `https://cdn.discordapp.com/embed/avatars/${defaultAvatarIndex}.png?size=128`;
 };
@@ -89,7 +86,6 @@ app.get("/callback", async (req, res) => {
       { upsert: true, new: true }
     );
 
-    // NOTE: Replace YOUR_INVITE_CODE with your actual Discord server invite code (e.g., 'abcde123').
     const DISCORD_INVITE_URL = 'https://discord.gg/prem';
 
     res.send(`
@@ -206,6 +202,14 @@ app.get("/callback", async (req, res) => {
         font-weight: 400;
       }
       
+      /* New style for the secondary information message */
+      .info-message {
+          font-size: 0.9rem; /* Slightly smaller than main p */
+          color: #949BA4; /* Lighter gray color */
+          margin-top: 5px; /* Added margin below the main description */
+          margin-bottom: 0; /* Remove default margin before buttons */
+      }
+      
       .button-container {
         display: flex;
         flex-direction: column; /* Stack buttons vertically on mobile */
@@ -216,13 +220,15 @@ app.get("/callback", async (req, res) => {
       
       .btn {
         display: block;
-        padding: 12px 20px;
+        /* BUTTON SIZE REDUCTION: Reduced padding from 12px 20px to 10px 18px */
+        padding: 10px 18px; 
         text-decoration: none;
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
         transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-        font-size: 1rem;
+        /* BUTTON SIZE REDUCTION: Reduced font size from 1rem to 0.95rem */
+        font-size: 0.95rem; 
         /* Flexbox to center icon and text */
         display: flex; 
         align-items: center; 
@@ -337,28 +343,33 @@ app.get("/callback", async (req, res) => {
       <h1>Verification Success!</h1>
       <p>Your Discord account is now linked with Zerxys.</p>
       
+      <!-- NEW LINE ADDED HERE -->
+      <p class="info-message">Click the buttons below for more information.</p>
+      
       <div class="button-container">
-        <!-- Button 1: Community (Primary) - Discord Logo -->
+
+        <!-- Button 1: Support (Primary) - Discord Logo -->
+        <a href="https://discord.gg/xhgBaRCEnZ" target="_blank" class="btn btn-primary">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord" class="btn-icon-img">
+            Support
+        </a>
+
+        <!-- Button 2: Community (Primary) - Discord Logo -->
         <a href="${DISCORD_INVITE_URL}" target="_blank" class="btn btn-primary">
             <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord" class="btn-icon-img">
-            Community
+            Main
         </a>
         
-        <!-- Button 2: Vote (Primary) - Top.gg Logo -->
+        <!-- Button 3: Vote (Primary) - Top.gg Logo -->
         <a href="https://top.gg/bot/1395806758135398623?s=0f03e30f77171" target="_blank" class="btn btn-primary">
             <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/topdotgg.svg" alt="Top.gg" class="btn-icon-img">
             Vote
         </a>
         
-        <!-- Button 3: Support (Primary) - Discord Logo -->
-        <a href="https://discord.gg/xhgBaRCEnZ" target="_blank" class="btn btn-primary">
-            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord" class="btn-icon-img">
-            Support
-        </a>
-      </div>
+        </div>
       
       <!-- Close Tab message and final button below the main button container -->
-      <p class="close-text">You can safely **close this window** now.</p>
+      <p class="close-text">You can safely close this window now.</p>
 
       <!-- Button 4: Close Tab (Final action button) -->
       <a href="javascript:window.close();" class="btn btn-close-action">

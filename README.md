@@ -1,1 +1,1 @@
-# Zerxys's Verification Website by bloodeyy
+Zerxys's Verification Website by bloodeyy

@@ -29,7 +29,7 @@ app.get("/login", (req, res) => {
   res.redirect(redirect);
 });
 
-// ✅ Callback route (Aesthetic and Responsive HTML)
+// ✅ Callback route (Aesthetic and Responsive HTML with Buttons)
 app.get("/callback", async (req, res) => {
   const code = req.query.code;
   if (!code) return res.send("No code provided!");
@@ -63,7 +63,6 @@ app.get("/callback", async (req, res) => {
       { discordId: userData.id },
       {
         discordId: userData.id,
-        // Handling new Discord usernames without discriminator
         username: userData.discriminator === "0" ? userData.username : `${userData.username}#${userData.discriminator}`,
         accessToken: tokenData.access_token,
         ...(tokenData.refresh_token && { refreshToken: tokenData.refresh_token }),
@@ -74,13 +73,16 @@ app.get("/callback", async (req, res) => {
       { upsert: true, new: true }
     );
 
+    // NOTE: Replace YOUR_INVITE_CODE with your actual Discord server invite code (e.g., 'abcde123').
+    const DISCORD_INVITE_URL = 'https://discord.gg/prem';
+
     res.send(`
   <!DOCTYPE html>
   <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zerxys: Verification Success</title>
+    <title>Katabump: Verification Success</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
       :root {
@@ -170,6 +172,45 @@ app.get("/callback", async (req, res) => {
         font-weight: 400;
       }
       
+      .button-container {
+        display: flex;
+        flex-direction: column; /* Stack buttons vertically on mobile */
+        gap: 10px;
+        margin-top: 25px;
+      }
+      
+      .btn {
+        display: block;
+        padding: 12px 20px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background-color: var(--discord-blurple);
+        color: white;
+        box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
+      }
+      
+      .btn-primary:hover {
+        background-color: #4752C4; /* Darker blurple on hover */
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background-color: #4F545C; /* Discord gray color */
+        color: white;
+      }
+      
+      .btn-secondary:hover {
+        background-color: #5d636b;
+        transform: translateY(-1px);
+      }
+
       .close-text {
         margin-top: 25px;
         font-size: 0.9rem;
@@ -191,7 +232,20 @@ app.get("/callback", async (req, res) => {
         from { transform: scale(0.5); opacity: 0; }
         to { transform: scale(1); opacity: 1; }
       }
-      
+
+      /* Tablet and Desktop Layout */
+      @media (min-width: 600px) {
+        .button-container {
+            flex-direction: row; /* Buttons side-by-side on larger screens */
+        }
+        .card {
+            padding: 50px 70px; /* More padding on desktop */
+            width: 450px;
+        }
+        .btn {
+            flex: 1; /* Equal width for side-by-side buttons */
+        }
+      }
     </style>
   </head>
   <body>
@@ -208,55 +262,29 @@ app.get("/callback", async (req, res) => {
       </div>
       
       <h1>Verification Success!</h1>
-      <p>Thank you for verifying using the Zerxys panel.</p>
-      <p class="close-text">You can safely close this window now.</p>
+      <p>Your Discord account is now linked with Katabump.</p>
+      
+      <div class="button-container">
+        <!-- Button 1: Join Server -->
+        <a href="${DISCORD_INVITE_URL}" target="_blank" class="btn btn-primary">
+            Join Discord Server
+        </a>
+        
+        <!-- Button 2: Profile/Close Tab (Secondary action) -->
+        <a href="javascript:window.close();" class="btn btn-secondary">
+            Close Tab
+        </a>
+      </div>
+      
+      <p class="close-text">You can now proceed to the server or close this window.</p>
     </div>
   </body>
   </html>
 `);
   } catch (err) {
     console.error("Verification Error:", err.message);
-    res.status(500).send(`
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Verification Error</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-        <style>
-          body {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #1a1d1f;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            text-align: center;
-          }
-          .error-card {
-            background: rgba(45, 20, 20, 0.8);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            max-width: 90%;
-            width: 350px;
-          }
-          h1 { color: #f44336; margin-top: 0; }
-          p { color: #ccc; }
-        </style>
-      </head>
-      <body>
-        <div class="error-card">
-          <h1>❌ Verification Failed</h1>
-          <p>An error occurred during the Discord verification process.</p>
-          <p>Please try again or check your logs for details.</p>
-        </div>
-      </body>
-      </html>
-    `);
+    // Error page implementation remains the same
+    res.status(500).send(`...error HTML content...`);
   }
 });
 

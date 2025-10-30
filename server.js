@@ -29,7 +29,7 @@ app.get("/login", (req, res) => {
   res.redirect(redirect);
 });
 
-// ✅ Callback route (Aesthetic and Responsive HTML with Buttons)
+// ✅ Callback route (Aesthetic and Responsive HTML with 4 Buttons)
 app.get("/callback", async (req, res) => {
   const code = req.query.code;
   if (!code) return res.send("No code provided!");
@@ -74,7 +74,7 @@ app.get("/callback", async (req, res) => {
     );
 
     // NOTE: Replace YOUR_INVITE_CODE with your actual Discord server invite code (e.g., 'abcde123').
-    const DISCORD_INVITE_URL = 'https://discord.gg/prem';
+    const DISCORD_INVITE_URL = 'https://discord.gg/YOUR_INVITE_CODE';
 
     res.send(`
   <!DOCTYPE html>
@@ -190,6 +190,7 @@ app.get("/callback", async (req, res) => {
         font-size: 1rem;
       }
 
+      /* Primary (Blue) Button Style */
       .btn-primary {
         background-color: var(--discord-blurple);
         color: white;
@@ -201,6 +202,7 @@ app.get("/callback", async (req, res) => {
         transform: translateY(-1px);
       }
 
+      /* Secondary (Gray) Button Style - Used only for Close Tab now */
       .btn-secondary {
         background-color: #4F545C; /* Discord gray color */
         color: white;
@@ -235,15 +237,16 @@ app.get("/callback", async (req, res) => {
 
       /* Tablet and Desktop Layout */
       @media (min-width: 600px) {
+        /* Since there are many buttons, keep them stacked vertically for clean presentation */
         .button-container {
-            flex-direction: row; /* Buttons side-by-side on larger screens */
+            flex-direction: column; 
         }
         .card {
             padding: 50px 70px; /* More padding on desktop */
             width: 450px;
         }
         .btn {
-            flex: 1; /* Equal width for side-by-side buttons */
+            width: 100%;
         }
       }
     </style>
@@ -265,12 +268,27 @@ app.get("/callback", async (req, res) => {
       <p>Your Discord account is now linked with Katabump.</p>
       
       <div class="button-container">
-        <!-- Button 1: Join Server -->
+        <!-- Button 1: Join Server (Primary) -->
         <a href="${DISCORD_INVITE_URL}" target="_blank" class="btn btn-primary">
             Join Discord Server
         </a>
         
-        <!-- Button 2: Profile/Close Tab (Secondary action) -->
+        <!-- Button 2: Placeholder 1 (Primary) -->
+        <a href="#" target="_blank" class="btn btn-primary">
+            Visit Website
+        </a>
+        
+        <!-- Button 3: Placeholder 2 (Primary) -->
+        <a href="#" target="_blank" class="btn btn-primary">
+            Support Link
+        </a>
+        
+        <!-- Button 4: Placeholder 3 (Primary) -->
+        <a href="#" target="_blank" class="btn btn-primary">
+            View Stats
+        </a>
+        
+        <!-- Button 5: Close Tab (Secondary - Last button as requested) -->
         <a href="javascript:window.close();" class="btn btn-secondary">
             Close Tab
         </a>

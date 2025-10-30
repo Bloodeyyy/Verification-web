@@ -140,23 +140,22 @@ app.get("/callback", async (req, res) => {
         animation: fadeIn 1s ease-in-out;
       }
       
-      .icon-container {
-        width: 60px;
-        height: 60px;
-        margin: 0 auto 20px;
-        color: var(--success-green);
-        animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      /* New style for the Animated Icon */
+      .confetti-icon-container {
+        font-size: 3rem; /* Large emoji size */
+        line-height: 1;
+        margin: 0 auto 10px; /* Reduced bottom margin */
+        animation: confetti-pop 0.8s ease-out;
+      }
+      
+      /* New style for the small greeting text */
+      .greeting-text {
+        font-size: 1rem;
+        color: #B9BBBE;
+        font-weight: 400;
+        margin-bottom: 5px; /* Added margin below greeting */
       }
 
-      .icon-svg {
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 3;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        width: 100%;
-        height: 100%;
-      }
 
       h1 {
         margin: 0 0 10px;
@@ -260,9 +259,10 @@ app.get("/callback", async (req, res) => {
           100% { transform: scale(1.1) translate(20px, 20px); }
       }
       
-      @keyframes scaleIn {
-        from { transform: scale(0.5); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
+      @keyframes confetti-pop {
+        0% { transform: scale(0.5) rotate(0deg); opacity: 0; }
+        50% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+        100% { transform: scale(1) rotate(0deg); }
       }
 
       /* Tablet and Desktop Layout */
@@ -282,38 +282,47 @@ app.get("/callback", async (req, res) => {
     </style>
   </head>
   <body>
+    <!-- Background Glow Blobs -->
     <div class="glow-blob blob-1"></div>
     <div class="glow-blob blob-2"></div>
     
     <div class="card">
-      <div class="icon-container">
-        <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
+      
+      <!-- New Animated Icon (Idea 2) -->
+      <div class="confetti-icon-container">
+        ✨
       </div>
       
+      <!-- New Greeting Text -->
+      <p class="greeting-text">Hello, ${userData.username || 'User'}!</p>
+
       <h1>Verification Success!</h1>
       <p>Your Discord account is now linked with Zerxys.</p>
       
       <div class="button-container">
+        <!-- Button 1: Community (Primary) - Discord Logo -->
         <a href="${DISCORD_INVITE_URL}" target="_blank" class="btn btn-primary">
             <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord" class="btn-icon-img">
             Community
         </a>
         
+        <!-- Button 2: Vote (Primary) - Top.gg Logo -->
         <a href="https://top.gg/bot/1395806758135398623?s=0f03e30f77171" target="_blank" class="btn btn-primary">
             <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/topdotgg.svg" alt="Top.gg" class="btn-icon-img">
             Vote
         </a>
         
+        <!-- Button 3: Support (Primary) - Discord Logo -->
         <a href="https://discord.gg/xhgBaRCEnZ" target="_blank" class="btn btn-primary">
             <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord" class="btn-icon-img">
             Support
         </a>
       </div>
       
+      <!-- Close Tab message and final button below the main button container -->
       <p class="close-text">You can safely **close this window** now.</p>
 
+      <!-- Button 4: Close Tab (Final action button) -->
       <a href="javascript:window.close();" class="btn btn-close-action">
           Close Tab
       </a>

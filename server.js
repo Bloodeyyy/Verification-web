@@ -283,12 +283,7 @@ app.get("/callback", async (req, res) => {
             Support
         </a>
         
-        <!-- Button 4: View Stats (Primary) -->
-        <a href="https://status.katabump.com" target="_blank" class="btn btn-primary">
-            View Stats
-        </a>
-        
-        <!-- Button 5: Close Tab (Secondary - Last button as requested) -->
+        <!-- Button 4: Close Tab (Secondary - Last button as requested) -->
         <a href="javascript:window.close();" class="btn btn-secondary">
             Close Tab
         </a>

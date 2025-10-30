@@ -132,15 +132,27 @@ app.get("/callback", async (req, res) => {
         background: rgba(35, 39, 42, 0.8); /* Semi-transparent dark background */
         backdrop-filter: blur(10px); /* Frosted Glass Effect */
         border: 1px solid rgba(100, 100, 100, 0.2); /* Light border for definition */
-        padding: 40px 30px; /* Reduced padding for mobile optimization */
+        padding: 0; /* Padding removed from card, added to content */
         border-radius: 16px;
+        overflow: hidden; /* To contain the header strip */
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Stronger shadow */
         text-align: center;
         max-width: 90%; /* Responsive width for mobile */
         width: 350px;
         animation: fadeIn 1s ease-in-out;
       }
+
+      /* New Header Strip */
+      .card-header {
+        background-color: var(--discord-blurple);
+        height: 10px; /* Slim, aesthetic strip */
+      }
       
+      /* Content padding */
+      .card-content {
+        padding: 40px 30px;
+      }
+
       .icon-container {
         /* Checked Icon (SVG) - Modern and High Quality */
         width: 60px;
@@ -204,26 +216,22 @@ app.get("/callback", async (req, res) => {
     <div class="glow-blob blob-2"></div>
     
     <div class="card">
-      <div class="icon-container">
-        <!-- Modern Checkmark SVG -->
-        <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-      </div>
+      <!-- New aesthetic header strip -->
+      <div class="card-header"></div>
       
-      <h1>Verification Success!</h1>
-      <p>Your Discord account is now linked with Katabump.</p>
-      <p class="close-text">You can safely close this window now.</p>
+      <div class="card-content">
+        <div class="icon-container">
+          <!-- Modern Checkmark SVG -->
+          <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        
+        <h1>Verification Success!</h1>
+        <!-- UPDATED DESCRIPTION -->
+        <p>Thank you for verifying using the Zerxys panel.</p> 
+        <p class="close-text">You can safely close this window now.</p>
+      </div>
     </div>
   </body>
   </html>
-`);
-  } catch (err) {
-    console.error(err);
-    res.send("Error during verification!");
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});

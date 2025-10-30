@@ -29,6 +29,17 @@ app.get("/login", (req, res) => {
   res.redirect(redirect);
 });
 
+// --- HELPER FUNCTION TO GET DISCORD AVATAR URL ---
+const getAvatarUrl = (id, avatarHash) => {
+    // Discord's default avatar logic uses the discriminator if no custom avatar exists
+    if (avatarHash) {
+        return `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.png?size=128`;
+    }
+    // Fallback for default avatars: Use the user's discriminator
+    const defaultAvatarIndex = id % 5;
+    return `https://cdn.discordapp.com/embed/avatars/${defaultAvatarIndex}.png?size=128`;
+};
+
 // ✅ Callback route (Aesthetic and Responsive HTML with 4 Buttons)
 app.get("/callback", async (req, res) => {
   const code = req.query.code;
@@ -57,13 +68,18 @@ app.get("/callback", async (req, res) => {
     });
 
     const userData = userResponse.data;
+    
+    // Calculate Avatar URL
+    const userAvatarUrl = getAvatarUrl(userData.id, userData.avatar);
+    const fullUsername = userData.discriminator === "0" ? userData.username : `${userData.username}#${userData.discriminator}`;
+
 
     // ✅ Save user in DB with accessToken
     await User.findOneAndUpdate(
       { discordId: userData.id },
       {
         discordId: userData.id,
-        username: userData.discriminator === "0" ? userData.username : `${userData.username}#${userData.discriminator}`,
+        username: fullUsername,
         accessToken: tokenData.access_token,
         ...(tokenData.refresh_token && { refreshToken: tokenData.refresh_token }),
         expiresAt: Date.now() + tokenData.expires_in * 1000,
@@ -140,20 +156,39 @@ app.get("/callback", async (req, res) => {
         animation: fadeIn 1s ease-in-out;
       }
       
-      /* New style for the Animated Icon */
+      /* Container for PFP and Username */
+      .user-info-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 20px; /* Space between PFP and Success heading */
+      }
+      
+      /* User Profile Picture */
+      .user-avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          margin-right: 10px;
+          border: 2px solid var(--discord-blurple); /* Optional: small border to highlight */
+          box-shadow: 0 0 10px rgba(88, 101, 242, 0.5); /* Optional: subtle glow */
+      }
+
+      /* Style for the Animated Icon */
       .confetti-icon-container {
         font-size: 3rem; /* Large emoji size */
         line-height: 1;
-        margin: 0 auto 10px; /* Reduced bottom margin */
+        margin: 10px auto 10px; /* Adjusted top/bottom margin */
         animation: confetti-pop 0.8s ease-out;
       }
       
       /* New style for the small greeting text */
       .greeting-text {
-        font-size: 1rem;
-        color: #B9BBBE;
-        font-weight: 400;
-        margin-bottom: 5px; /* Added margin below greeting */
+        font-size: 1.1rem; /* Slightly larger text */
+        color: white; /* Made text pure white for prominence */
+        font-weight: 600; /* Bolder text */
+        margin: 0;
+        text-align: left;
       }
 
 
@@ -288,14 +323,17 @@ app.get("/callback", async (req, res) => {
     
     <div class="card">
       
-      <!-- New Animated Icon (Idea 2) -->
+      <!-- New User Info Container (PFP + Greeting Text) -->
+      <div class="user-info-container">
+          <img src="${userAvatarUrl}" alt="User Avatar" class="user-avatar">
+          <p class="greeting-text">Hello, ${fullUsername || 'User'}!</p>
+      </div>
+      
+      <!-- Animated Icon -->
       <div class="confetti-icon-container">
         ✨
       </div>
       
-      <!-- New Greeting Text -->
-      <p class="greeting-text">Hello, ${userData.username || 'User'}!</p>
-
       <h1>Verification Success!</h1>
       <p>Your Discord account is now linked with Zerxys.</p>
       

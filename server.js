@@ -331,14 +331,3 @@ app.get("/callback", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
-```eof
-
-Maine yeh changes kiye hain:
-
-* **Icons (Logos):**
-    * **Community:** `Discord.svg` logo use kiya.
-    * **Vote:** `Top.gg.svg` logo use kiya.
-    * **Support:** `Discord.svg` logo use kiya.
-* **CSS Update:** Naya class `.btn-icon-img` banaya hai aur `filter: brightness(0) invert(1)` property use ki hai. Yeh property logos ke original color (jo aksar dark hote hain) ko **white** mein badal deti hai, jisse woh **Blurple** button background par perfect dikhenge.
-
-Ab aap `server.js` file ko deploy kar sakte hain.

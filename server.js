@@ -78,57 +78,142 @@ app.get("/callback", async (req, res) => {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verification Successful</title>
+    <title>Katabump: Verification Success</title>
+    <!-- Use a better font for Discord aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
+      :root {
+        --discord-blurple: #5865F2;
+        --discord-dark: #23272A;
+        --discord-darker: #1A1D1F;
+        --success-green: #38A169;
+      }
       body {
         margin: 0;
         height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #000; /* ✅ pure black background */
-        font-family: "Inter", sans-serif;
+        /* Discord-like gradient background with dark theme */
+        background: radial-gradient(circle at center, #2e3034 0%, #1a1d1f 100%); 
+        font-family: 'Inter', sans-serif;
         color: white;
         text-align: center;
+        overflow: hidden; /* Hide potential scrollbar from animations */
       }
+      
+      /* Glowing Background Effect (Discord-like) */
+      .glow-blob {
+          position: absolute;
+          width: 300px;
+          height: 300px;
+          border-radius: 50%;
+          filter: blur(80px);
+          opacity: 0.3;
+          z-index: -1;
+          animation: pulse 8s infinite alternate;
+      }
+
+      .blob-1 {
+          background-color: var(--discord-blurple);
+          top: 10%;
+          left: 10%;
+      }
+
+      .blob-2 {
+          background-color: var(--success-green);
+          bottom: 10%;
+          right: 10%;
+          animation-delay: 2s;
+      }
+      
       .card {
-        background: rgba(20, 20, 20, 0.9);
-        padding: 50px 70px;
-        border-radius: 18px;
-        box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
+        /* Glass/Frosted effect for a modern aesthetic look */
+        background: rgba(35, 39, 42, 0.8); /* Semi-transparent dark background */
+        backdrop-filter: blur(10px); /* Frosted Glass Effect */
+        border: 1px solid rgba(100, 100, 100, 0.2); /* Light border for definition */
+        padding: 40px 30px; /* Reduced padding for mobile optimization */
+        border-radius: 16px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Stronger shadow */
         text-align: center;
-        max-width: 420px;
+        max-width: 90%; /* Responsive width for mobile */
+        width: 350px;
         animation: fadeIn 1s ease-in-out;
       }
-      .emoji {
-        font-size: 3.5rem;
-        color: #fff;
-        text-shadow: 0 0 12px #fff, 0 0 25px #888;
+      
+      .icon-container {
+        /* Checked Icon (SVG) - Modern and High Quality */
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 20px;
+        color: var(--success-green);
+        animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
       }
+
+      .icon-svg {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        width: 100%;
+        height: 100%;
+      }
+
       h1 {
-        margin: 20px 0 12px;
-        font-size: 2rem;
-        color: #fff;
-        font-weight: bold; /* ✅ bold heading */
-        text-shadow: 0 0 10px #ffffff55;
+        margin: 0 0 10px;
+        font-size: 1.8rem;
+        font-weight: 800; /* Extra bold for impact */
+        color: white;
       }
+      
       p {
         margin: 0;
-        font-size: 1.2rem;
-        color: #ddd;
-        font-weight: bold; /* ✅ bold text */
+        font-size: 1rem;
+        color: #B9BBBE; /* Discord subtle text color */
+        font-weight: 400;
       }
+      
+      .close-text {
+        margin-top: 25px;
+        font-size: 0.9rem;
+        color: #72767D; /* Very subtle text */
+      }
+
+      /* Animations */
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(25px); }
+        from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
       }
+
+      @keyframes pulse {
+          0% { transform: scale(1) translate(-20px, -20px); }
+          100% { transform: scale(1.1) translate(20px, 20px); }
+      }
+      
+      @keyframes scaleIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      
     </style>
   </head>
   <body>
+    <!-- Background Glow Blobs -->
+    <div class="glow-blob blob-1"></div>
+    <div class="glow-blob blob-2"></div>
+    
     <div class="card">
-      <div class="emoji">✨</div>
-      <h1>Verified Successfully</h1>
-      <p>You may now close this tab.</p>
+      <div class="icon-container">
+        <!-- Modern Checkmark SVG -->
+        <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      
+      <h1>Verification Success!</h1>
+      <p>Your Discord account is now linked with Katabump.</p>
+      <p class="close-text">You can safely close this window now.</p>
     </div>
   </body>
   </html>

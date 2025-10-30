@@ -74,7 +74,7 @@ app.get("/callback", async (req, res) => {
     );
 
     // NOTE: Replace YOUR_INVITE_CODE with your actual Discord server invite code (e.g., 'abcde123').
-    const DISCORD_INVITE_URL = 'https://discord.gg/YOUR_INVITE_CODE';
+    const DISCORD_INVITE_URL = 'https://discord.gg/prem';
 
     res.send(`
   <!DOCTYPE html>
@@ -82,7 +82,7 @@ app.get("/callback", async (req, res) => {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katabump: Verification Success</title>
+    <title>Zerxys: Verification Success</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
       :root {
@@ -265,26 +265,26 @@ app.get("/callback", async (req, res) => {
       </div>
       
       <h1>Verification Success!</h1>
-      <p>Your Discord account is now linked with Katabump.</p>
+      <p>Your Discord account is now linked with Zerxys.</p>
       
       <div class="button-container">
         <!-- Button 1: Join Server (Primary) -->
         <a href="${DISCORD_INVITE_URL}" target="_blank" class="btn btn-primary">
-            Join Discord Server
+            Community
         </a>
         
-        <!-- Button 2: Placeholder 1 (Primary) -->
-        <a href="#" target="_blank" class="btn btn-primary">
-            Visit Website
+        <!-- Button 2: Visit Website (Primary) -->
+        <a href="https://top.gg/bot/1395806758135398623?s=0f03e30f77171" target="_blank" class="btn btn-primary">
+            Vote
         </a>
         
-        <!-- Button 3: Placeholder 2 (Primary) -->
-        <a href="#" target="_blank" class="btn btn-primary">
-            Support Link
+        <!-- Button 3: Support Link (Primary) -->
+        <a href="https://discord.gg/xhgBaRCEnZ" target="_blank" class="btn btn-primary">
+            Support
         </a>
         
-        <!-- Button 4: Placeholder 3 (Primary) -->
-        <a href="#" target="_blank" class="btn btn-primary">
+        <!-- Button 4: View Stats (Primary) -->
+        <a href="https://status.katabump.com" target="_blank" class="btn btn-primary">
             View Stats
         </a>
         

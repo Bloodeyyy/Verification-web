@@ -177,6 +177,7 @@ app.get("/callback", async (req, res) => {
         flex-direction: column; /* Stack buttons vertically on mobile */
         gap: 10px;
         margin-top: 25px;
+        margin-bottom: 25px; /* Added margin for space before closing message */
       }
       
       .btn {
@@ -188,7 +189,21 @@ app.get("/callback", async (req, res) => {
         cursor: pointer;
         transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
         font-size: 1rem;
+        /* Flexbox to center icon and text */
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
       }
+      
+      /* Style for the icon/image inside the button */
+      .btn-icon-img {
+          width: 20px; /* Standard icon size */
+          height: 20px;
+          margin-right: 10px;
+          /* Invert filter to make black SVGs appear white on a dark background */
+          filter: brightness(0) invert(1);
+      }
+
 
       /* Primary (Blue) Button Style */
       .btn-primary {
@@ -202,7 +217,7 @@ app.get("/callback", async (req, res) => {
         transform: translateY(-1px);
       }
 
-      /* Secondary (Gray) Button Style - Used only for Close Tab now */
+      /* Secondary (Gray) Button Style */
       .btn-secondary {
         background-color: #4F545C; /* Discord gray color */
         color: white;
@@ -212,11 +227,26 @@ app.get("/callback", async (req, res) => {
         background-color: #5d636b;
         transform: translateY(-1px);
       }
+      
+      /* New style for the final action button, slightly different from secondary */
+      .btn-close-action {
+          background-color: #36393f; /* Darker, less intrusive background */
+          color: #B9BBBE;
+          box-shadow: none;
+          border: 1px solid #4F545C;
+      }
+
+      .btn-close-action:hover {
+          background-color: #4F545C;
+      }
+
 
       .close-text {
-        margin-top: 25px;
-        font-size: 0.9rem;
-        color: #72767D;
+        font-size: 0.95rem;
+        color: #B9BBBE;
+        font-weight: 600; /* Made text a bit bolder */
+        margin-top: 0;
+        padding: 10px 0;
       }
 
       /* Animations */
@@ -252,13 +282,11 @@ app.get("/callback", async (req, res) => {
     </style>
   </head>
   <body>
-    <!-- Background Glow Blobs -->
     <div class="glow-blob blob-1"></div>
     <div class="glow-blob blob-2"></div>
     
     <div class="card">
       <div class="icon-container">
-        <!-- Modern Checkmark SVG -->
         <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
@@ -268,28 +296,27 @@ app.get("/callback", async (req, res) => {
       <p>Your Discord account is now linked with Zerxys.</p>
       
       <div class="button-container">
-        <!-- Button 1: Join Server (Primary) -->
         <a href="${DISCORD_INVITE_URL}" target="_blank" class="btn btn-primary">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord" class="btn-icon-img">
             Community
         </a>
         
-        <!-- Button 2: Visit Website (Primary) -->
         <a href="https://top.gg/bot/1395806758135398623?s=0f03e30f77171" target="_blank" class="btn btn-primary">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/topdotgg.svg" alt="Top.gg" class="btn-icon-img">
             Vote
         </a>
         
-        <!-- Button 3: Support Link (Primary) -->
         <a href="https://discord.gg/xhgBaRCEnZ" target="_blank" class="btn btn-primary">
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" alt="Discord" class="btn-icon-img">
             Support
-        </a>
-        
-        <!-- Button 4: Close Tab (Secondary - Last button as requested) -->
-        <a href="javascript:window.close();" class="btn btn-secondary">
-            Close Tab
         </a>
       </div>
       
-      <p class="close-text">You can now proceed to the server or close this window.</p>
+      <p class="close-text">You can safely **close this window** now.</p>
+
+      <a href="javascript:window.close();" class="btn btn-close-action">
+          Close Tab
+      </a>
     </div>
   </body>
   </html>
@@ -304,3 +331,14 @@ app.get("/callback", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+```eof
+
+Maine yeh changes kiye hain:
+
+* **Icons (Logos):**
+    * **Community:** `Discord.svg` logo use kiya.
+    * **Vote:** `Top.gg.svg` logo use kiya.
+    * **Support:** `Discord.svg` logo use kiya.
+* **CSS Update:** Naya class `.btn-icon-img` banaya hai aur `filter: brightness(0) invert(1)` property use ki hai. Yeh property logos ke original color (jo aksar dark hote hain) ko **white** mein badal deti hai, jisse woh **Blurple** button background par perfect dikhenge.
+
+Ab aap `server.js` file ko deploy kar sakte hain.

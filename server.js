@@ -1,8 +1,9 @@
-import express from "express";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import axios from "axios";
-import User from "./models/User.js";
+const express = require("express");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const axios = require("axios");
+// FIX 1: Change import to require for CommonJS stability, especially on Render.
+const User = require("./models/User"); 
 
 dotenv.config();
 const app = express();
@@ -11,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 
 // MongoDB Connect
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("MongoDB Error:", err));
 
@@ -28,7 +29,7 @@ app.get("/login", (req, res) => {
   res.redirect(redirect);
 });
 
-// ✅ Callback route
+// ✅ Callback route (Aesthetic and Responsive HTML)
 app.get("/callback", async (req, res) => {
   const code = req.query.code;
   if (!code) return res.send("No code provided!");
@@ -59,18 +60,19 @@ app.get("/callback", async (req, res) => {
 
     // ✅ Save user in DB with accessToken
     await User.findOneAndUpdate(
-  { discordId: userData.id },
-  {
-    discordId: userData.id,
-    username: `${userData.username}#${userData.discriminator}`,
-    accessToken: tokenData.access_token,
-    ...(tokenData.refresh_token && { refreshToken: tokenData.refresh_token }),
-    expiresAt: Date.now() + tokenData.expires_in * 1000,
-    verified: true,
-    verifiedAt: new Date()
-  },
-  { upsert: true, new: true }
-);
+      { discordId: userData.id },
+      {
+        discordId: userData.id,
+        // Handling new Discord usernames without discriminator
+        username: userData.discriminator === "0" ? userData.username : `${userData.username}#${userData.discriminator}`,
+        accessToken: tokenData.access_token,
+        ...(tokenData.refresh_token && { refreshToken: tokenData.refresh_token }),
+        expiresAt: Date.now() + tokenData.expires_in * 1000,
+        verified: true,
+        verifiedAt: new Date()
+      },
+      { upsert: true, new: true }
+    );
 
     res.send(`
   <!DOCTYPE html>
@@ -78,14 +80,12 @@ app.get("/callback", async (req, res) => {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katabump: Verification Success</title>
-    <!-- Use a better font for Discord aesthetic -->
+    <title>Zerxys: Verification Success</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
       :root {
         --discord-blurple: #5865F2;
         --discord-dark: #23272A;
-        --discord-darker: #1A1D1F;
         --success-green: #38A169;
       }
       body {
@@ -94,15 +94,13 @@ app.get("/callback", async (req, res) => {
         display: flex;
         align-items: center;
         justify-content: center;
-        /* Discord-like gradient background with dark theme */
         background: radial-gradient(circle at center, #2e3034 0%, #1a1d1f 100%); 
         font-family: 'Inter', sans-serif;
         color: white;
         text-align: center;
-        overflow: hidden; /* Hide potential scrollbar from animations */
+        overflow: hidden;
       }
       
-      /* Glowing Background Effect (Discord-like) */
       .glow-blob {
           position: absolute;
           width: 300px;
@@ -128,33 +126,19 @@ app.get("/callback", async (req, res) => {
       }
       
       .card {
-        /* Glass/Frosted effect for a modern aesthetic look */
-        background: rgba(35, 39, 42, 0.8); /* Semi-transparent dark background */
-        backdrop-filter: blur(10px); /* Frosted Glass Effect */
-        border: 1px solid rgba(100, 100, 100, 0.2); /* Light border for definition */
-        padding: 0; /* Padding removed from card, added to content */
+        background: rgba(35, 39, 42, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(100, 100, 100, 0.2);
+        padding: 40px 30px;
         border-radius: 16px;
-        overflow: hidden; /* To contain the header strip */
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Stronger shadow */
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         text-align: center;
-        max-width: 90%; /* Responsive width for mobile */
+        max-width: 90%;
         width: 350px;
         animation: fadeIn 1s ease-in-out;
       }
-
-      /* New Header Strip */
-      .card-header {
-        background-color: var(--discord-blurple);
-        height: 10px; /* Slim, aesthetic strip */
-      }
       
-      /* Content padding */
-      .card-content {
-        padding: 40px 30px;
-      }
-
       .icon-container {
-        /* Checked Icon (SVG) - Modern and High Quality */
         width: 60px;
         height: 60px;
         margin: 0 auto 20px;
@@ -175,21 +159,21 @@ app.get("/callback", async (req, res) => {
       h1 {
         margin: 0 0 10px;
         font-size: 1.8rem;
-        font-weight: 800; /* Extra bold for impact */
+        font-weight: 800;
         color: white;
       }
       
       p {
         margin: 0;
         font-size: 1rem;
-        color: #B9BBBE; /* Discord subtle text color */
+        color: #B9BBBE;
         font-weight: 400;
       }
       
       .close-text {
         margin-top: 25px;
         font-size: 0.9rem;
-        color: #72767D; /* Very subtle text */
+        color: #72767D;
       }
 
       /* Animations */
@@ -216,22 +200,66 @@ app.get("/callback", async (req, res) => {
     <div class="glow-blob blob-2"></div>
     
     <div class="card">
-      <!-- New aesthetic header strip -->
-      <div class="card-header"></div>
-      
-      <div class="card-content">
-        <div class="icon-container">
-          <!-- Modern Checkmark SVG -->
-          <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        
-        <h1>Verification Success!</h1>
-        <!-- UPDATED DESCRIPTION -->
-        <p>Thank you for verifying using the Zerxys panel.</p> 
-        <p class="close-text">You can safely close this window now.</p>
+      <div class="icon-container">
+        <!-- Modern Checkmark SVG -->
+        <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
       </div>
+      
+      <h1>Verification Success!</h1>
+      <p>Thank you for verifying using the Zerxys panel.</p>
+      <p class="close-text">You can safely close this window now.</p>
     </div>
   </body>
   </html>
+`);
+  } catch (err) {
+    console.error("Verification Error:", err.message);
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verification Error</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+        <style>
+          body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a1d1f;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+          }
+          .error-card {
+            background: rgba(45, 20, 20, 0.8);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            max-width: 90%;
+            width: 350px;
+          }
+          h1 { color: #f44336; margin-top: 0; }
+          p { color: #ccc; }
+        </style>
+      </head>
+      <body>
+        <div class="error-card">
+          <h1>❌ Verification Failed</h1>
+          <p>An error occurred during the Discord verification process.</p>
+          <p>Please try again or check your logs for details.</p>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
